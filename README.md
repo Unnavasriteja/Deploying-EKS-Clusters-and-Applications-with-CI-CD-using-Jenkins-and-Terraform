@@ -31,13 +31,7 @@ This repository provides a step-by-step guide to automating the deployment of an
 ├── architecture.png       # Architecture diagram
 ```
 
----
 
-## **Architecture Diagram**
-
-![Architecture Diagram](architecture.png)
-
----
 
 ## **Key Components**
 
@@ -47,7 +41,7 @@ This repository provides a step-by-step guide to automating the deployment of an
 - Install tools like `Java`, `Terraform`, `Docker`, `AWS CLI`, and `Kubectl`.
 - Configure Jenkins for CI/CD operations.
 
-**Example Terraform Configuration:**
+**Terraform Configuration for Jenkins Server:**
 
 ```hcl
 # backend.tf
@@ -100,7 +94,7 @@ sudo systemctl enable jenkins
 - Write Terraform scripts to create a secure and scalable EKS cluster within a private subnet.
 - Secure cluster access using IAM roles and policies.
 
-**Example Terraform Configuration:**
+**Terraform Configuration for EKS Cluster:**
 
 ```hcl
 # backend.tf
@@ -141,7 +135,7 @@ module "eks" {
 - Deploy a simple Nginx application to the EKS cluster using Kubernetes manifests.
 - Configure a LoadBalancer to expose the application.
 
-**Example Kubernetes Manifests:**
+**Kubernetes Manifests for Application Deployment:**
 
 ```yaml
 # deployment.yaml
@@ -189,7 +183,7 @@ spec:
 - Automate EKS provisioning and application deployment using a Jenkins pipeline.
 - Integrate Terraform and Kubernetes commands into Jenkins stages.
 
-**Example Jenkinsfile:**
+**Jenkinsfile for CI/CD Pipeline:**
 
 ```groovy
 pipeline {
@@ -285,15 +279,15 @@ Before you begin, ensure the following are ready:
 
 ### Jenkins Pipeline Execution
 
-![Pipeline Execution](https://via.placeholder.com/700x400)
+![Pipeline Execution](jenkins.png)
 
 ### EKS Cluster in AWS
 
-![EKS Cluster](https://via.placeholder.com/700x400)
+![EKS Cluster](eks.png)
 
 ### Application Running
 
-![Application Screenshot](https://via.placeholder.com/700x400)
+![Application Screenshot](app.png)
 
 ---
 
