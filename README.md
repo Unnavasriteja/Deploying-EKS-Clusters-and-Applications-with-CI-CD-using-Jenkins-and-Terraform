@@ -25,13 +25,20 @@ This repository provides a step-by-step guide to automating the deployment of an
 ├── 📂 tf-aws-eks          # Terraform scripts for EKS cluster creation
 ├── 📂 jenkins_server      # Terraform and shell scripts for Jenkins setup
 ├── 📂 manifest            # Kubernetes YAML files for application deployment
+├── install_tools.sh       # Script for installing tools on Jenkins server
 ├── Jenkinsfile            # Jenkins pipeline script
 ├── README.md              # Documentation
 ├── image.png              # Project diagram or preview
 ├── architecture.png       # Architecture diagram
 ```
 
+---
 
+## **Architecture Diagram**
+
+![Architecture Diagram](architecture.png)
+
+---
 
 ## **Key Components**
 
@@ -41,50 +48,74 @@ This repository provides a step-by-step guide to automating the deployment of an
 - Install tools like `Java`, `Terraform`, `Docker`, `AWS CLI`, and `Kubectl`.
 - Configure Jenkins for CI/CD operations.
 
-**Terraform Configuration for Jenkins Server:**
+**Shell Script for Installing Tools:**
 
-```hcl
-# backend.tf
-terraform {
-  backend "s3" {
-    bucket = "terraform-eks-cicd-unique"
-    key    = "jenkins/terraform.tfstate"
-    region = "us-east-1"
-  }
-}
+Save the following content into a file named `install_tools.sh` and use it for automating tool installation on the Jenkins server:
+
+```bash
+#!/bin/bash
+
+# Update system
+sudo yum update -y
+
+# Install Java
+sudo yum install -y java-11-amazon-corretto
+
+# Install Jenkins
+sudo yum install wget -y
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+sudo yum install jenkins -y
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+
+# Install Docker
+sudo yum install -y docker
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo usermod -aG docker ec2-user
+sudo usermod -aG docker jenkins
+
+# Install AWS CLI
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Install Terraform
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum install -y terraform
+
+# Install Kubectl
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+# Verify installations
+java -version
+jenkins --version
+docker --version
+aws --version
+terraform --version
+kubectl version --client
 ```
 
-```hcl
-# main.tf
-module "ec2_instance" {
-  source = "terraform-aws-modules/ec2-instance/aws"
+Make sure to run this script as part of the EC2 instance provisioning process using `user_data` in Terraform.
 
-  name                   = "jenkins-server"
-  instance_type          = "t2.medium"
-  ami                    = "ami-0e8a34246278c21e4"
-  key_name               = "jenkins_keypair"
-  monitoring             = true
-  vpc_security_group_ids = [module.sg.security_group_id]
-  subnet_id              = module.vpc.public_subnets[0]
+**Example Terraform Configuration:**
+
+```hcl
+resource "aws_instance" "jenkins" {
+  ami           = "ami-0e8a34246278c21e4"
+  instance_type = "t2.medium"
+  key_name      = "jenkins_keypair"
+
+  user_data = file("install_tools.sh")
 
   tags = {
     Name = "Jenkins-Server"
   }
 }
-```
-
-**Shell Script for Jenkins Installation:**
-
-```bash
-#!/bin/bash
-# Installing Jenkins and required tools
-sudo yum install wget -y
-sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
-sudo yum install java-11-amazon-corretto -y
-sudo yum install jenkins -y
-sudo systemctl start jenkins
-sudo systemctl enable jenkins
 ```
 
 ---
@@ -279,15 +310,15 @@ Before you begin, ensure the following are ready:
 
 ### Jenkins Pipeline Execution
 
-![Pipeline Execution](jenkins.png)
+![Pipeline Execution](https://via.placeholder.com/700x400)
 
 ### EKS Cluster in AWS
 
-![EKS Cluster](eks.png)
+![EKS Cluster](https://via.placeholder.com/700x400)
 
 ### Application Running
 
-![Application Screenshot](app.png)
+![Application Screenshot](https://via.placeholder.com/700x400)
 
 ---
 
