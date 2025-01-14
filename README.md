@@ -310,11 +310,11 @@ Before you begin, ensure the following are ready:
 
 ### Jenkins Pipeline Execution
 
-![Pipeline Execution](https://via.placeholder.com/700x400)
+![Pipeline Execution](jenkins.png)
 
 ### EKS Cluster in AWS
 
-![EKS Cluster](https://via.placeholder.com/700x400)
+![EKS Cluster](eks.png)
 
 ### Application Running
 
