@@ -318,7 +318,7 @@ Before you begin, ensure the following are ready:
 
 ### Application Running
 
-![Application Screenshot](https://via.placeholder.com/700x400)
+![Application Screenshot](app.png)
 
 ---
 
